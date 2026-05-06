@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Looky - Встречайтесь с друзьями</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- ЭКРАН АВТОРИЗАЦИИ -->
+    <div id="authScreen" class="screen active">
+        <div class="auth-container">
+            <div class="auth-box">
+                <div class="logo">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <h1>Looky</h1>
+                </div>
+                <p class="subtitle">Встречайтесь с друзьями в реальном времени</p>
+
+                <div class="auth-tabs">
+                    <button class="tab-btn active" data-tab="login">Вход</button>
+                    <button class="tab-btn" data-tab="register">Регистрация</button>
+                </div>
+
+                <!-- ВХОД -->
+                <div id="loginTab" class="tab-content active">
+                    <form id="loginForm">
+                        <div class="input-group">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" placeholder="Email" required>
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" placeholder="Пароль" required>
+                        </div>
+                        <button type="submit" class="btn-primary">Войти</button>
+                    </form>
+                </div>
+
+                <!-- РЕГИСТРАЦИЯ -->
+                <div id="registerTab" class="tab-content">
+                    <form id="registerForm">
+                        <div class="input-group">
+                            <i class="fas fa-user"></i>
+                            <input type="text" placeholder="Имя пользователя" required>
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" placeholder="Email" required>
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" placeholder="Пароль" required>
+                        </div>
+                        <button type="submit" class="btn-primary">Зарегистрироваться</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ЭКРАН ГРУПП -->
+    <div id="groupsScreen" class="screen">
+        <header class="navbar">
+            <div class="navbar-content">
+                <h2><i class="fas fa-map-marker-alt"></i> Looky</h2>
+                <div class="user-menu">
+                    <span id="currentUser"></span>
+                    <button id="logoutBtn" class="btn-logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="container">
+            <div class="groups-header">
+                <h2>Мои группы</h2>
+                <button id="createGroupBtn" class="btn-primary">
+                    <i class="fas fa-plus"></i> Создать группу
+                </button>
+            </div>
+
+            <div id="groupsList" class="groups-grid">
+                <!-- Группы будут загружены здесь -->
+            </div>
+        </main>
+
+        <!-- МОДАЛЬ ДЛЯ СОЗДАНИЯ ГРУППЫ -->
+        <div id="createGroupModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Создать новую группу</h3>
+                    <button class="close-btn">&times;</button>
+                </div>
+                <form id="createGroupForm">
+                    <div class="form-group">
+                        <label>Название группы</label>
+                        <input type="text" placeholder="Например: Пикник в парке" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Описание</label>
+                        <textarea placeholder="Описание встречи..." rows="4"></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary">Создать группу</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ЭКРАН КАРТЫ И ГРУППЫ -->
+    <div id="groupMapScreen" class="screen">
+        <div class="map-container">
+            <!-- БОКОВАЯ ПАНЕЛЬ -->
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <button id="backBtn" class="btn-back">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h3 id="groupTitle"></h3>
+                </div>
+
+                <nav class="sidebar-tabs">
+                    <button class="tab-btn active" data-view="map">
+                        <i class="fas fa-map"></i> Карта
+                    </button>
+                    <button class="tab-btn" data-view="chat">
+                        <i class="fas fa-comments"></i> Чат
+                    </button>
+                    <button class="tab-btn" data-view="places">
+                        <i class="fas fa-map-pin"></i> Места
+                    </button>
+                    <button class="tab-btn" data-view="ai">
+                        <i class="fas fa-robot"></i> AI
+                    </button>
+                </nav>
+
+                <!-- СОДЕРЖИМОЕ ВКЛАДОК -->
+                <div class="sidebar-content">
+                    <!-- КАРТА -->
+                    <div id="mapView" class="view-content active">
+                        <div class="members-list">
+                            <h4>Участники</h4>
+                            <div id="membersList" class="members"></div>
+                        </div>
+                    </div>
+
+                    <!-- ЧАТ -->
+                    <div id="chatView" class="view-content">
+                        <div id="chatMessages" class="chat-messages"></div>
+                        <div class="chat-input-area">
+                            <input type="text" id="chatInput" placeholder="Напишите сообщение...">
+                            <button id="sendMessageBtn" class="btn-send">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- МЕСТА -->
+                    <div id="placesView" class="view-content">
+                        <div id="placesList" class="places-list">
+                            <!-- Места будут загружены здесь -->
+                        </div>
+                    </div>
+
+                    <!-- AI РЕКОМЕНДАЦИИ -->
+                    <div id="aiView" class="view-content">
+                        <div class="ai-section">
+                            <h4>AI Рекомендации</h4>
+                            <p class="ai-subtitle">Искусственный интеллект подберет лучшие места для вашей группы</p>
+                            <button id="getRecommendationsBtn" class="btn-primary">
+                                <i class="fas fa-sparkles"></i> Получить рекомендации
+                            </button>
+                            <div id="recommendationsList" class="recommendations-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- КАРТА -->
+            <div id="map" class="map"></div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
