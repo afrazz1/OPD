@@ -10,15 +10,15 @@
       {
         "source": "/api/**",
         "run": {
-          "serviceId": "YOUR_CLOUD_RUN_SERVICE",
-          "region": "YOUR_REGION"
+          "serviceId": "opd-backend",
+          "region": "us-central1"
         }
       },
       {
         "source": "/socket.io/**",
         "run": {
-          "serviceId": "YOUR_CLOUD_RUN_SERVICE",
-          "region": "YOUR_REGION"
+          "serviceId": "opd-backend",
+          "region": "us-central1"
         }
       },
       {

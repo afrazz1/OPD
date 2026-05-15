@@ -75,35 +75,51 @@ npm start
 
 Это приложение лучше всего размещать на Firebase Hosting вместе с Google Cloud Run, чтобы сохранить полный backend и Socket.IO.
 
-1. Убедитесь, что у вас есть проект Firebase.
+1. Убедитесь, что у вас есть проект Firebase. Если нет, создайте его на https://console.firebase.google.com/
 2. Установите Firebase CLI, если ещё не установлено:
 
 ```bash
 npm install -g firebase-tools
 ```
 
-3. В корне проекта выполните:
+3. Установите Google Cloud SDK, если ещё не установлено (скачайте с https://cloud.google.com/sdk/docs/install)
+
+4. Войдите в аккаунты:
 
 ```bash
 firebase login
+gcloud auth login
+```
+
+5. Установите проект Firebase:
+
+```bash
+gcloud config set project opd-group-meetup-app
+```
+
+6. Разверните backend на Cloud Run:
+
+```bash
+gcloud run deploy opd-backend --source . --region us-central1 --platform managed --allow-unauthenticated --port 5000
+```
+
+7. Инициализируйте Firebase Hosting:
+
+```bash
 firebase init hosting
 ```
 
-4. При инициализации выберите ваш Firebase проект и папку `public`.
-5. В `firebase.json` замените `YOUR_CLOUD_RUN_SERVICE` и `YOUR_REGION` на ваши значения.
-6. Разверните Cloud Run сервис для `server.js`:
+При инициализации выберите:
+- Папку `public` для хостинга
+- Настройку как SPA (single-page app)
 
-```bash
-gcloud run deploy YOUR_CLOUD_RUN_SERVICE --source . --region YOUR_REGION --platform managed --allow-unauthenticated
-```
-
-7. Разверните Firebase Hosting:
+8. Разверните Firebase Hosting:
 
 ```bash
 firebase deploy --only hosting
 ```
 
-8. Откройте сайт по адресу вашего Firebase Hosting.
+9. Откройте сайт по адресу вашего Firebase Hosting (обычно `https://opd-group-meetup-app.web.app/` или `https://opd-group-meetup-app.firebaseapp.com/`)
 
 > Firebase Hosting будет отдавать статический frontend, а весь backend (`/api`, `/socket.io`) будет проксироваться на Cloud Run.
 
