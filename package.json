@@ -7,7 +7,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "deploy": "gh-pages -d public"
+    "deploy": "gh-pages -d public",
+    "deploy:firebase": "npx firebase deploy"
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -16,6 +17,7 @@
     "socket.io": "^4.5.4"
   },
   "devDependencies": {
+    "firebase-tools": "^12.0.0",
     "gh-pages": "^5.0.0",
     "nodemon": "^2.0.20"
   }

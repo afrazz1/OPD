@@ -60,7 +60,54 @@ npm start
 
 Клиент теперь использует текущий URL сайта для API и WebSocket, поэтому приложение будет работать не только на `localhost`, но и на удалённом хостинге.
 
-### 5. Развёртывание на GitHub Pages
+> ВАЖНО: GitHub Pages поддерживает только статические файлы. Ваше приложение содержит backend, регистрацию, чат и Socket.IO, поэтому оно не сможет работать полностью на GitHub Pages без отдельного Node.js-сервера.
+
+### 5. Что нужно для полноценной работы сайта
+
+- Разместить проект на Node.js-хостинге (Heroku, Railway, Render, VPS, Fly.io и т.п.).
+- Убедиться, что хостинг запускает `server.js` и задаёт `PORT` через `process.env.PORT`.
+- В `public/index.html` заменить `YOUR_YANDEX_MAPS_API_KEY` на реальный ключ Яндекс.Карт.
+- Доступ к сайту должен быть по HTTPS, чтобы геолокация работала корректно.
+
+Если вы хотите, я помогу вам подготовить проект для конкретного сервиса, если укажете, какой хостинг собираетесь использовать.
+
+### 6. Развёртывание через Firebase Hosting + Cloud Run
+
+Это приложение лучше всего размещать на Firebase Hosting вместе с Google Cloud Run, чтобы сохранить полный backend и Socket.IO.
+
+1. Убедитесь, что у вас есть проект Firebase.
+2. Установите Firebase CLI, если ещё не установлено:
+
+```bash
+npm install -g firebase-tools
+```
+
+3. В корне проекта выполните:
+
+```bash
+firebase login
+firebase init hosting
+```
+
+4. При инициализации выберите ваш Firebase проект и папку `public`.
+5. В `firebase.json` замените `YOUR_CLOUD_RUN_SERVICE` и `YOUR_REGION` на ваши значения.
+6. Разверните Cloud Run сервис для `server.js`:
+
+```bash
+gcloud run deploy YOUR_CLOUD_RUN_SERVICE --source . --region YOUR_REGION --platform managed --allow-unauthenticated
+```
+
+7. Разверните Firebase Hosting:
+
+```bash
+firebase deploy --only hosting
+```
+
+8. Откройте сайт по адресу вашего Firebase Hosting.
+
+> Firebase Hosting будет отдавать статический frontend, а весь backend (`/api`, `/socket.io`) будет проксироваться на Cloud Run.
+
+### 7. Развёртывание на GitHub Pages
 
 Это приложение может быть размещено на GitHub Pages как статический frontend из папки `public`.
 
