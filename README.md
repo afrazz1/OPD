@@ -75,50 +75,51 @@ npm start
 
 Это приложение лучше всего размещать на Firebase Hosting вместе с Google Cloud Run, чтобы сохранить полный backend и Socket.IO.
 
+#### Быстрое развертывание (рекомендуется):
+
+1. Установите Firebase CLI и Google Cloud SDK
+2. Войдите в аккаунты:
+   ```bash
+   firebase login
+   gcloud auth login
+   ```
+3. Запустите полное развертывание:
+   ```bash
+   npm run deploy:full
+   ```
+
+#### Ручное развертывание:
+
 1. Убедитесь, что у вас есть проект Firebase. Если нет, создайте его на https://console.firebase.google.com/
 2. Установите Firebase CLI, если ещё не установлено:
-
-```bash
-npm install -g firebase-tools
-```
-
+   ```bash
+   npm install -g firebase-tools
+   ```
 3. Установите Google Cloud SDK, если ещё не установлено (скачайте с https://cloud.google.com/sdk/docs/install)
-
 4. Войдите в аккаунты:
-
-```bash
-firebase login
-gcloud auth login
-```
-
+   ```bash
+   firebase login
+   gcloud auth login
+   ```
 5. Установите проект Firebase:
-
-```bash
-gcloud config set project opd-group-meetup-app
-```
-
+   ```bash
+   gcloud config set project opd-group-meetup-app
+   ```
 6. Разверните backend на Cloud Run:
-
-```bash
-gcloud run deploy opd-backend --source . --region us-central1 --platform managed --allow-unauthenticated --port 5000
-```
-
+   ```bash
+   gcloud run deploy opd-backend --source . --region us-central1 --platform managed --allow-unauthenticated --port 5000
+   ```
 7. Инициализируйте Firebase Hosting:
-
-```bash
-firebase init hosting
-```
-
-При инициализации выберите:
-- Папку `public` для хостинга
-- Настройку как SPA (single-page app)
-
+   ```bash
+   firebase init hosting
+   ```
+   При инициализации выберите:
+   - Папку `public` для хостинга
+   - Настройку как SPA (single-page app)
 8. Разверните Firebase Hosting:
-
-```bash
-firebase deploy --only hosting
-```
-
+   ```bash
+   firebase deploy --only hosting
+   ```
 9. Откройте сайт по адресу вашего Firebase Hosting (обычно `https://opd-group-meetup-app.web.app/` или `https://opd-group-meetup-app.firebaseapp.com/`)
 
 > Firebase Hosting будет отдавать статический frontend, а весь backend (`/api`, `/socket.io`) будет проксироваться на Cloud Run.
