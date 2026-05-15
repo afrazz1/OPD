@@ -453,6 +453,11 @@ app.get('/api/places', (req, res) => {
   res.json({ success: true, places });
 });
 
+// Роут для SPA и хостинга на удалённом сайте
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 // ==================== SOCKET.IO ====================
 
 io.on('connection', (socket) => {

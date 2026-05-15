@@ -7,7 +7,7 @@ let map = null;
 let userMarkers = new Map();
 let placeMarkers = new Map();
 
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = `${window.location.origin}/api`;
 
 // ==================== ИНИЦИАЛИЗАЦИЯ ====================
 
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // ==================== SOCKET.IO ====================
 
 function initializeSocketIO() {
-    socket = io('http://localhost:5000', {
+    socket = io(window.location.origin, {
         reconnectionDelay: 1000,
         reconnection: true,
         reconnectionAttempts: 10,
