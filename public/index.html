@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Looky - Встречайтесь с друзьями</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+    <!-- Yandex Maps API - замените YOUR_YANDEX_MAPS_API_KEY на ваш реальный API ключ с https://developer.tech.yandex.ru/ -->
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=YOUR_YANDEX_MAPS_API_KEY&lang=ru_RU" type="text/javascript"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -145,6 +146,13 @@
                             <h4>Участники</h4>
                             <div id="membersList" class="members"></div>
                         </div>
+
+                        <div class="invite-box">
+                            <h4>Пригласить пользователя</h4>
+                            <input id="inviteEmailInput" type="email" placeholder="Email пользователя" />
+                            <button id="inviteUserBtn" class="btn-secondary">Пригласить</button>
+                            <div id="inviteStatus" class="invite-status"></div>
+                        </div>
                     </div>
 
                     <!-- ЧАТ -->
@@ -185,7 +193,6 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

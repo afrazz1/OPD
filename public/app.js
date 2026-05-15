@@ -250,6 +250,10 @@ function setupMapListeners() {
 
     document.getElementById('getRecommendationsBtn').addEventListener('click', getAIRecommendations);
     document.getElementById('sendMessageBtn').addEventListener('click', sendMessage);
+    document.getElementById('inviteUserBtn').addEventListener('click', inviteUserToGroup);
+    document.getElementById('inviteEmailInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') inviteUserToGroup();
+    });
 
     document.getElementById('chatInput').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') sendMessage();
@@ -257,30 +261,38 @@ function setupMapListeners() {
 }
 
 function initializeMap() {
-    if (map) map.remove();
+    ymaps.ready(function() {
+        if (map) {
+            map.destroy();
+        }
 
-    map = L.map('map').setView([55.7558, 37.6173], 13);
+        map = new ymaps.Map('map', {
+            center: [55.7558, 37.6173],
+            zoom: 13,
+            controls: ['zoomControl', 'fullscreenControl']
+        });
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors',
-        maxZoom: 19
-    }).addTo(map);
-
-    loadGroupMembers();
+        loadGroupMembers();
+    });
 }
 
 function updateUserOnMap(data) {
     const { userId, lat, lng } = data;
 
     if (userMarkers.has(userId)) {
-        userMarkers.get(userId).setLatLng([lat, lng]);
+        const marker = userMarkers.get(userId);
+        marker.geometry.setCoordinates([lat, lng]);
     } else {
-        const marker = L.marker([lat, lng]).addTo(map)
-            .bindPopup(`<div class="map-popup"><div class="map-popup-user">Друг</div><div class="map-popup-status"><i class="fas fa-check-circle" style="color: #48bb78;"></i> Online</div></div>`);
-        userMarkers.set(userId, marker);
+        const placemark = new ymaps.Placemark([lat, lng], {
+            balloonContent: '<div class="map-popup"><div class="map-popup-user">Друг</div><div class="map-popup-status"><i class="fas fa-check-circle" style="color: #48bb78;"></i> Online</div></div>'
+        }, {
+            preset: 'islands#blueIcon'
+        });
+        map.geoObjects.add(placemark);
+        userMarkers.set(userId, placemark);
     }
 
-    map.setView([lat, lng], map.getZoom());
+    map.setCenter([lat, lng], map.getZoom());
 }
 
 function startLocationTracking() {
@@ -301,22 +313,18 @@ function startLocationTracking() {
                 // Обновление позиции пользователя на карте
                 if (map) {
                     if (userMarkers.has(currentUser.id)) {
-                        userMarkers.get(currentUser.id).setLatLng([latitude, longitude]);
+                        const marker = userMarkers.get(currentUser.id);
+                        marker.geometry.setCoordinates([latitude, longitude]);
                     } else {
-                        const marker = L.marker([latitude, longitude], {
-                            icon: L.icon({
-                                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-                                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-                                iconSize: [25, 41],
-                                iconAnchor: [12, 41],
-                                popupAnchor: [1, -34],
-                                shadowSize: [41, 41]
-                            })
-                        }).addTo(map)
-                            .bindPopup(`<div class="map-popup"><div class="map-popup-user">Вы</div><div class="map-popup-status"><i class="fas fa-check-circle" style="color: #48bb78;"></i> Online</div></div>`);
-                        userMarkers.set(currentUser.id, marker);
+                        const placemark = new ymaps.Placemark([latitude, longitude], {
+                            balloonContent: '<div class="map-popup"><div class="map-popup-user">Вы</div><div class="map-popup-status"><i class="fas fa-check-circle" style="color: #48bb78;"></i> Online</div></div>'
+                        }, {
+                            preset: 'islands#blueIcon'
+                        });
+                        map.geoObjects.add(placemark);
+                        userMarkers.set(currentUser.id, placemark);
                     }
-                    map.setView([latitude, longitude], map.getZoom());
+                    map.setCenter([latitude, longitude], map.getZoom());
                 }
             },
             (error) => console.error('Ошибка геолокации:', error),
@@ -369,29 +377,23 @@ function displayRecommendations(recommendations) {
 
 function displayPlacesOnMap(places) {
     // Удаление старых маркеров мест
-    placeMarkers.forEach(marker => map.removeLayer(marker));
+    placeMarkers.forEach(marker => map.geoObjects.remove(marker));
     placeMarkers.clear();
 
     places.forEach(place => {
-        const marker = L.marker([place.lat, place.lng], {
-            icon: L.icon({
-                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
-                popupAnchor: [1, -34],
-                shadowSize: [41, 41]
-            })
-        }).addTo(map)
-            .bindPopup(`<div class="map-popup"><strong>${place.name}</strong><br/>⭐ ${place.rating}</div>`);
-        
-        placeMarkers.set(place.id, marker);
+        const placemark = new ymaps.Placemark([place.lat, place.lng], {
+            balloonContent: `<div class="map-popup"><strong>${place.name}</strong><br/>⭐ ${place.rating}</div>`
+        }, {
+            preset: 'islands#redIcon'
+        });
+        map.geoObjects.add(placemark);
+        placeMarkers.set(place.id, placemark);
     });
 }
 
 function centerMapOnPlace(lat, lng) {
     if (map) {
-        map.flyTo([lat, lng], 15);
+        map.setCenter([lat, lng], 15);
     }
 }
 
@@ -400,11 +402,43 @@ function translateType(type) {
         cinema: '🎬 Кино',
         cafe: '☕ Кафе',
         park: '🌳 Парк',
-        restaurant: '🍽️ Ресторан',
-        bar: '🍺 Бар',
-        museum: '🏛️ Музей'
+        bowling: '🎳 Боулинг',
+        theater: '🎭 Театр',
+        quest: '🧩 Квест',
+        karting: '🏎️ Картинг',
+        bar: '🍺 Бар'
     };
     return types[type] || type;
+}
+
+async function loadPlaces() {
+    try {
+        const response = await fetch(`${API_BASE}/places`);
+        const data = await response.json();
+        if (data.success) {
+            displayPlaces(data.places);
+            displayPlacesOnMap(data.places);
+        }
+    } catch (error) {
+        console.error('Ошибка загрузки мест:', error);
+    }
+}
+
+function displayPlaces(places) {
+    const list = document.getElementById('placesList');
+    list.innerHTML = places.map(place => `
+        <div class="place-item" onclick="centerMapOnPlace(${place.lat}, ${place.lng})">
+            <div class="place-header">
+                <div class="place-name">${place.name}</div>
+                <span class="place-type">${translateType(place.type)}</span>
+            </div>
+            <div class="place-address">${place.address}</div>
+            <div class="place-description">${place.description}</div>
+            <div class="place-rating">
+                <i class="fas fa-star" style="color: #f6ad55;"></i> ${place.rating}
+            </div>
+        </div>
+    `).join('');
 }
 
 // ==================== ЧАТ ====================
@@ -478,15 +512,67 @@ async function loadGroupMembers() {
     }
 }
 
-function displayGroupMembers(memberIds) {
+async function displayGroupMembers(memberIds) {
     const membersList = document.getElementById('membersList');
-    membersList.innerHTML = memberIds.map((memberId, index) => `
+
+    if (memberIds.length === 0) {
+        membersList.innerHTML = '<p class="empty-members">В этой группе пока нет участников.</p>';
+        return;
+    }
+
+    const membersData = await Promise.all(memberIds.map(async (memberId) => {
+        try {
+            const response = await fetch(`${API_BASE}/users/${memberId}`);
+            const data = await response.json();
+            return data.success ? data.user : { id: memberId, username: `Пользователь ${memberId}` };
+        } catch (error) {
+            return { id: memberId, username: `Пользователь ${memberId}` };
+        }
+    }));
+
+    membersList.innerHTML = membersData.map((member, index) => `
         <div class="member-item">
             <div class="member-avatar">${String.fromCharCode(65 + index)}</div>
-            <span>Участник #${index + 1}</span>
+            <span>${member.username}</span>
             <div class="member-status online"></div>
         </div>
     `).join('');
+}
+
+async function inviteUserToGroup() {
+    const emailInput = document.getElementById('inviteEmailInput');
+    const status = document.getElementById('inviteStatus');
+    const email = emailInput.value.trim();
+
+    if (!email) {
+        status.textContent = 'Введите email пользователя для приглашения.';
+        status.className = 'invite-status error';
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE}/groups/${currentGroup.id}/invite`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            status.textContent = `Пользователь ${data.username} приглашён.`;
+            status.className = 'invite-status success';
+            emailInput.value = '';
+            loadGroupMembers();
+        } else {
+            status.textContent = data.message || 'Ошибка приглашения.';
+            status.className = 'invite-status error';
+        }
+    } catch (error) {
+        console.error('Ошибка приглашения пользователя:', error);
+        status.textContent = 'Ошибка сервера. Попробуйте позже.';
+        status.className = 'invite-status error';
+    }
 }
 
 // ==================== ВКЛАДКИ ====================
@@ -497,6 +583,11 @@ function switchView(viewName) {
 
     document.getElementById(`${viewName}View`).classList.add('active');
     event.target.classList.add('active');
+
+    // Загрузка данных для вкладки
+    if (viewName === 'places') {
+        loadPlaces();
+    }
 }
 
 // ==================== УТИЛИТЫ ====================

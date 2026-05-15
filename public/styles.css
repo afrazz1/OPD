@@ -188,6 +188,24 @@ body {
     transform: translateY(0);
 }
 
+.btn-secondary {
+    width: 100%;
+    padding: 12px;
+    background: var(--light-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 16px;
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
 .btn-logout {
     background: var(--danger);
     color: white;
@@ -563,6 +581,43 @@ body {
     background: var(--text-secondary);
 }
 
+.invite-box {
+    margin-top: 20px;
+    padding: 16px;
+    background: var(--light-bg);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+}
+
+.invite-box h4 {
+    margin-bottom: 10px;
+    font-size: 15px;
+}
+
+.invite-box input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: white;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.invite-status {
+    margin-top: 8px;
+    font-size: 13px;
+    min-height: 18px;
+}
+
+.invite-status.success {
+    color: var(--success);
+}
+
+.invite-status.error {
+    color: var(--danger);
+}
+
 /* ЧАТ */
 
 .chat-messages {
@@ -726,6 +781,67 @@ body {
 .recommendation-stats {
     display: flex;
     justify-content: space-between;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* МЕСТА */
+
+.places-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.place-item {
+    padding: 15px;
+    background: linear-gradient(135deg, #48bb7815 0%, #38a16915 100%);
+    border: 1px solid rgba(72, 187, 120, 0.2);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.place-item:hover {
+    background: linear-gradient(135deg, #48bb7825 0%, #38a16925 100%);
+    border-color: rgba(72, 187, 120, 0.4);
+    transform: translateX(4px);
+}
+
+.place-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.place-name {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.place-type {
+    display: inline-block;
+    padding: 2px 8px;
+    background: var(--secondary);
+    color: white;
+    border-radius: 4px;
+    font-size: 11px;
+}
+
+.place-address {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.place-description {
+    font-size: 13px;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.place-rating {
     font-size: 12px;
     color: var(--text-secondary);
 }
