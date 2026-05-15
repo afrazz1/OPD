@@ -13,6 +13,4 @@ build
 *.log
 .vscode
 .idea
-firebase.json
-.firebaserc
 Procfile

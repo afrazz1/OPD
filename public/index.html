@@ -5,16 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Looky - Встречайтесь с друзьями</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <!-- Yandex Maps API - замените YOUR_YANDEX_MAPS_API_KEY на ваш реальный API ключ с https://developer.tech.yandex.ru/ -->
     <script src="https://api-maps.yandex.ru/2.1/?apikey=72ecdca0-f111-446a-8a97-7d04e41eb477&lang=ru_RU" type="text/javascript"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="min-h-screen bg-slate-950 text-slate-100">
     <!-- ЭКРАН АВТОРИЗАЦИИ -->
     <div id="authScreen" class="screen active">
-        <div class="auth-container">
-            <div class="auth-box">
-                <div class="logo">
+        <div class="auth-container flex items-center justify-center min-h-screen px-4 py-8">
+            <div class="auth-box w-full max-w-md rounded-3xl bg-slate-900/95 border border-slate-800 p-6 shadow-2xl backdrop-blur-sm">
+                <div class="logo flex items-center gap-3 text-white mb-4">
                     <i class="fas fa-map-marker-alt"></i>
                     <h1>Looky</h1>
                 </div>
@@ -150,7 +151,7 @@
                         <div class="invite-box">
                             <h4>Пригласить пользователя</h4>
                             <input id="inviteEmailInput" type="email" placeholder="Email пользователя" />
-                            <button id="inviteUserBtn" class="btn-secondary">Пригласить</button>
+                            <button id="inviteUserBtn" class="btn-secondary bg-slate-800 hover:bg-slate-700 text-white transition-colors rounded-lg py-3 px-4">Пригласить</button>
                             <div id="inviteStatus" class="invite-status"></div>
                         </div>
                     </div>
